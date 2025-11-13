@@ -11,17 +11,18 @@ sudo apt install netdata -y
 echo "Stopping Netdata temporarily..."
 sudo systemctl stop netdata
 
-echo "Hardening Netdata configuration..."
+echo "Configuring Netdata for remote access..."
 # Backup original config
 sudo cp /etc/netdata/netdata.conf /etc/netdata/netdata.conf.bak
 
-# Force dashboard to be accessible ONLY from localhost (safe mode)
+# Configure dashboard to be accessible remotely on port 19998
 sudo tee /etc/netdata/netdata.conf > /dev/null <<EOF
 [global]
     run as user = netdata
     web files owner = netdata
     web files group = netdata
-    bind socket to IP = 127.0.0.1
+    bind socket to IP = 0.0.0.0
+    default port = 19998
     memory mode = dbengine
     page cache size = 64
 EOF
@@ -30,10 +31,10 @@ echo "Restarting Netdata..."
 sudo systemctl restart netdata
 sudo systemctl enable netdata
 
-echo "Done! Netdata is now safely installed."
+echo "Done! Netdata is now installed and accessible remotely."
 
-echo "Your dashboard is ONLY available on this server via:"
-echo "   http://127.0.0.1:19999"
+echo "Your dashboard is available at:"
+echo "   http://YOUR_SERVER_IP:19998"
 echo ""
-echo "If you want to access it remotely, use SSH tunnel:"
-echo "   ssh -L 19999:localhost:19999 YOUR_USER@YOUR_SERVER_IP"
+echo "⚠️  Security Note: Make sure to configure firewall rules to restrict access if needed:"
+echo "   sudo ufw allow 19998/tcp"
