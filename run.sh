@@ -25,8 +25,9 @@ show_menu() {
     echo -e "${BLUE}1)${NC} Install Fail2Ban"
     echo -e "${BLUE}2)${NC} Install and Configure Netdata"
     echo -e "${BLUE}3)${NC} Create/Configure Swap File"
-    echo -e "${BLUE}4)${NC} Run All Scripts"
-    echo -e "${BLUE}5)${NC} Exit"
+    echo -e "${BLUE}4)${NC} Run Stress Test"
+    echo -e "${BLUE}5)${NC} Run All Scripts"
+    echo -e "${BLUE}6)${NC} Exit"
     echo ""
     echo -e "${GREEN}========================================${NC}"
 }
@@ -40,7 +41,7 @@ pause() {
 # Main loop
 while true; do
     show_menu
-    read -p "Select an option (1-5): " choice
+    read -p "Select an option (1-6): " choice
     
     case $choice in
         1)
@@ -61,6 +62,11 @@ while true; do
             pause
             ;;
         4)
+            echo -e "\n${YELLOW}Running Stress Test...${NC}\n"
+            sudo bash "$SCRIPT_DIR/scripts/stress_test.sh"
+            pause
+            ;;
+        5)
             echo -e "\n${YELLOW}Running all scripts...${NC}\n"
             echo -e "${GREEN}Step 1/3: Installing Fail2Ban...${NC}"
             bash "$SCRIPT_DIR/scripts/install_fail2ban.sh"
@@ -74,12 +80,12 @@ while true; do
             echo -e "${GREEN}All scripts completed!${NC}"
             pause
             ;;
-        5)
+        6)
             echo -e "\n${GREEN}Exiting...${NC}"
             exit 0
             ;;
         *)
-            echo -e "\n${RED}Invalid option. Please select 1-5.${NC}"
+            echo -e "\n${RED}Invalid option. Please select 1-6.${NC}"
             sleep 2
             ;;
     esac
